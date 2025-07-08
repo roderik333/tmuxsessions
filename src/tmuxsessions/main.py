@@ -80,10 +80,14 @@ def load_sessions():
     for session_name, windows in sessions.items():
         if existing_sessions is not None and session_name in existing_sessions:
             continue
-        _ = execute_command(f"tmux new-session -d -s {session_name}")
         for window in windows:
-            print(window["window_name"])
-            _ = execute_command(f"tmux new-window -t {session_name} -n {window['window_name']} -c {window['path']}")
+            result = execute_command(f"tmux has-session -t {session_name}", suppress_error=True)
+            if result is not None:
+                _ = execute_command(
+                    f"tmux new-window -t {session_name} -n {window['window_name']} -c {window['path']}"
+                )
+            else:
+                _ = execute_command(f"tmux new-session -d -s {session_name} -n {window['window_name']}")
 
     click.secho("Sessions restored.", fg="green")
 

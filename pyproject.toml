@@ -37,8 +37,8 @@ include = ["tmuxsessions*"]  # package names should match these glob patterns ([
 exclude = [""]  # exclude packages matching these glob patterns (empty by default)
 namespaces = false  # to disable scanning PEP 420 namespaces (true by default)
 
-[tool.setuptools-scm]
-version_file = "_version.py"
+[tool.setuptools_scm]
+version_file = "src/tmuxsessions/_version.py"
 
 
 [project.optional-dependencies]
