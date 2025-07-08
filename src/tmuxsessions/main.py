@@ -14,7 +14,6 @@ import json
 import os
 import pathlib
 import subprocess
-from contextlib import suppress
 from typing import TypeAlias, TypedDict, cast
 
 import click
@@ -29,12 +28,13 @@ Session: TypeAlias = dict[str, list[Window]]
 SESSION_FILE = pathlib.Path.home() / ".tmux_sessions.json"
 
 
-def execute_command(command: str) -> str | None:
+def execute_command(command: str, suppress_error: bool = False) -> str | None:
     try:
         result = subprocess.run(command, shell=True, check=True, text=True, capture_output=True)
         return result.stdout.strip()
     except subprocess.CalledProcessError as e:
-        click.secho(f"Error executing command: {e}", err=True, fg="red")
+        if not suppress_error:
+            click.secho(f"Error executing command: {e}", err=True, fg="red")
         return None
 
 
@@ -67,7 +67,6 @@ def load_sessions():
     This will restore sessions that has been closed, but it will not resore single
     windows inside existings sessions.
     """
-    existing_sessions: str | None = None
 
     if not os.path.exists(SESSION_FILE):
         click.echo(f"Session file {SESSION_FILE} not found.", err=True)
@@ -76,14 +75,14 @@ def load_sessions():
     with open(SESSION_FILE, "r") as f:
         sessions: Session = cast("Session", json.load(f))
 
-    with suppress(subprocess.CalledProcessError):
-        existing_sessions = execute_command("tmux list-session -F '#S'")
+    existing_sessions: str | None = execute_command("tmux list-session -F '#S'", suppress_error=True)
 
     for session_name, windows in sessions.items():
         if existing_sessions is not None and session_name in existing_sessions:
             continue
         _ = execute_command(f"tmux new-session -d -s {session_name}")
         for window in windows:
+            print(window["window_name"])
             _ = execute_command(f"tmux new-window -t {session_name} -n {window['window_name']} -c {window['path']}")
 
     click.secho("Sessions restored.", fg="green")
