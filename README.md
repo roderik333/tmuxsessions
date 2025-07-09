@@ -32,9 +32,19 @@ t load-sessions
 
 This will restore sessions that have been closed but does not restore single windows inside existing sessions.
 
+## Autocoplete
+
+We want tab completion, and we want it now.
+
+```bash
+eval "$(_T_COMPLETE=zsh_source t)"
+```
+
+This is for the zsh shell. For other shells look at [Shell Completion](https://click.palletsprojects.com/en/stable/shell-completion/).
+
 ## Aliases
 
-Useful aliases for `.zshrc`:
+Some useful aliases for `.zshrc`:
 
 ```bash
 tm='tmux new -s '
