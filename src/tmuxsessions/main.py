@@ -45,7 +45,7 @@ def save_sessions():
     I don't use split windows so I wil not bother with implementing that.
 
     """
-    command = "tmux list-windows -a -F '#S${d}#W${d}#{pane_current_path}'"
+    command = "tmux list-windows -a -F '#S\\${d}#W\\${d}#{pane_current_path}'"
     output = execute_command(command)
     if output:
         sessions: Session = {}
