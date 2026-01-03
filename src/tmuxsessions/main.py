@@ -45,7 +45,7 @@ def save_sessions():
     I don't use split windows so I wil not bother with implementing that.
 
     """
-    command = "tmux list-windows -a -F '#S\\${d}#W\\${d}#{pane_current_path}'"
+    command = "tmux list-windows -a -F '#S\\${d}#W\\${d}#{pane_start_path}'"
     output = execute_command(command)
     if output:
         sessions: Session = {}
@@ -87,7 +87,7 @@ def load_sessions():
                     f"tmux new-window -t {session_name} -n {window['window_name']} -c {window['path']}"
                 )
             else:
-                _ = execute_command(f"tmux new-session -d -s {session_name} -n {window['window_name']}")
+                _ = execute_command(f"tmux new-session -d -s {session_name} -n {window['window_name']} -c {window['path']}")
 
     click.secho("Sessions restored.", fg="green")
 
