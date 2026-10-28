@@ -60,6 +60,29 @@ def save_sessions():
         click.secho(f"Sessions saved to {SESSION_FILE}", fg="blue")
 
 
+@click.command("n", short_help="create new session")
+@click.argument("name")
+def new_session(name):
+    _ = execute_command(f"tmux new -d -s {name}")
+    click.secho("Sessions created.", fg="green")
+
+
+@click.command("l", short_help="list the sessions")
+def list_sessions():
+    print(execute_command("tmux list-session", suppress_error=True))
+
+
+@click.command("a", short_help="attach to a session")
+@click.argument("name")
+def attach_to_session(name):
+    _ = execute_command("tmux attach-session -t {name}")
+
+
+@click.command("d", short_help="detatch from session")
+def detach_from_session():
+    _ = execute_command("tmux detach")
+
+
 @click.command()
 def load_sessions():
     """A simple way to load sessions.
@@ -101,6 +124,11 @@ def cli():
 
 cli.add_command(save_sessions)
 cli.add_command(load_sessions)
+cli.add_command(new_session)
+cli.add_command(list_sessions)
+cli.add_command(attach_to_session)
+cli.add_command(detach_from_session)
+
 
 if __name__ == "__main__":
     cli()
