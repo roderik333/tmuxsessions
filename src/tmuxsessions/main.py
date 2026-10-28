@@ -75,7 +75,7 @@ def list_sessions():
 @click.command("a", short_help="attach to a session")
 @click.argument("name")
 def attach_to_session(name):
-    _ = execute_command("tmux attach-session -t {name}")
+    _ = execute_command(f"tmux attach -t {name}")
 
 
 @click.command("d", short_help="detatch from session")
